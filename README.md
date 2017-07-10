@@ -32,11 +32,6 @@ TBD - probably a tupperware type box to start.
 
 Would ideally like to write in app in Go (ex: https://github.com/mrmorphic/hwio) however if this is too annoying due to lack of easy GPIO support Python it is.
 
-```
-go get github.com/tools/godep
-
-```
-
 ## Related Projects / Ideas / Reading / Tools
 
 * https://create.arduino.cc/projecthub/dbarbee/temperature-controled-charcoal-smoker-58db49
