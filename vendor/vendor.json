@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "g80lRzk6/E9dpC7XgG3OcYn/D+U=",
+			"path": "github.com/mrmorphic/hwio",
+			"revision": "57be4097a82f84a5455d11c1b00306b037debebc",
+			"revisionTime": "2017-06-16T22:17:47Z"
+		}
+	],
+	"rootPath": "github.com/aphexddb/wickedsmoke"
+}
