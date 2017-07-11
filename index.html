@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Wicked Smoke Client Example</title>
+<script type="text/javascript">
+window.onload = function () {
+    var conn;
+    var msg = document.getElementById("msg");
+    var log = document.getElementById("log");
+
+    function appendLog(item) {
+        var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
+        log.appendChild(item);
+        if (doScroll) {
+            log.scrollTop = log.scrollHeight - log.clientHeight;
+        }
+    }
+
+    function probeHtml(probe, name, number) {
+        if (probe[name]) {
+            const p = probe[name];
+            console.log(p);
+            gauge = document.getElementById(name)
+            gauge.innerHTML = `
+            <div class="probe">
+                <h2>Probe ${number}</h2>
+                <p>Voltage: ${p['voltage']}</p>
+                <p>c: ${p['c']}</p>
+                <p>f: ${p['f']}</p>
+            </div>
+            `;
+        }
+    }
+
+    document.getElementById("form").onsubmit = function () {
+        if (!conn) {
+            return false;
+        }
+        if (!msg.value) {
+            return false;
+        }
+        conn.send(msg.value);
+        msg.value = "";
+        return false;
+    };
+
+    if (window["WebSocket"]) {
+        conn = new WebSocket("ws://" + document.location.host + "/ws");
+        conn.onclose = function (evt) {
+            var item = document.createElement("div");
+            item.innerHTML = "<b>Connection closed.</b>";
+            appendLog(item);
+        };
+        conn.onmessage = function (evt) {
+            var messages = evt.data.split('\n');
+            for (var i = 0; i < messages.length; i++) {                
+                var item = document.createElement("div");
+                item.innerText = messages[i];
+                appendLog(item);
+
+                var hw = JSON.parse(messages[i]);
+                probeHtml(hw, "probe0", 0)
+                probeHtml(hw, "probe1", 1)
+                probeHtml(hw, "probe2", 2)
+                probeHtml(hw, "probe3", 3)
+            }
+        };
+    } else {
+        var item = document.createElement("div");
+        item.innerHTML = "<b>Your browser does not support WebSockets.</b>";
+        appendLog(item);
+    }
+};
+</script>
+<style type="text/css">
+body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: gray;
+}
+
+#container {
+    display: flex; 
+    flex-direction: column;
+}
+
+#log {
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+    margin: auto;
+    overflow: hidden;
+    background: white;
+    margin: 0;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    top: 0.5em;
+    left: 0.5em;
+    right: 0.5em;
+    bottom: 3em;
+}
+
+#form {
+    height: 40px;
+    min-height: 40px;
+    max-height: 40px;
+    margin: auto;
+    padding: 0 0.5em 0 0.5em;
+    margin: 0;
+    bottom: 1em;
+    left: 0px;
+    width: 100%;
+}
+#gauges {
+    padding: 0 0.5em 0 0.5em;
+    margin: auto;
+
+    display: flex; 
+    flex-direction: row;
+}
+#gauges .probe {
+    width: 200px;
+}
+
+</style>
+</head>
+<body>
+<div id="container">
+    <div id="log"></div>    
+    <div id="gauges">
+        <div id="probe0">
+            Probe 0
+        </div>
+        <div id="probe1">
+            Probe 1
+        </div>
+        <div id="probe2">
+            Probe 2
+        </div>
+        <div id="probe3">
+            Probe 3
+        </div>
+    </div>
+    <form id="form">
+        <input type="submit" value="Send" />
+        <input type="text" id="msg" size="64"/>
+    </form>
+</div>
+</body>
+</html>
