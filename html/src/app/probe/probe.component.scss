@@ -1,0 +1,30 @@
+.probe {
+    min-height: 100px;
+    margin: auto;
+    text-align: center;
+
+    .probe-data {
+      display: flex;
+      flex-direction: row;
+
+      span.label {
+        
+      }
+      span.data {
+        font-size: larger;
+        font-weight: bold;
+      }
+
+      .voltage {
+        
+      }
+      .celsius {
+        
+      }
+      .targetTemp {
+        
+      }
+    }
+
+
+  }
