@@ -27,7 +27,7 @@ type Hardware struct {
 
 // NewHardware creates a new instance of the hardware
 func NewHardware() *Hardware {
-	log.Println("hardware: TODO: NewHardware -> use GPIO")
+	log.Println("hardware: TODO: NewHardware -> use NewRaspPiOAnalog")
 	return &Hardware{
 		adc:    NewRaspPiOAnalog(),
 		Probe0: Probe{Voltage: 0, Celsius: 0, Fahrenheit: 0},
@@ -44,7 +44,8 @@ func (h *Hardware) Read(intervalMs int, c chan *Hardware) {
 		// ask adc hardware for voltages
 		channels, err := h.adc.GetChannels()
 		if err != nil {
-			log.Fatalf("hardware: error reading channels: %s\n", err)
+			// log.Fatalf("hardware: error reading channels: %s\n", err)
+			log.Printf("hardware: error reading adc channels: %s\n", err)
 		} else {
 			for i := 0; i < len(channels); i++ {
 				log.Printf("adc channel %v voltage: %v\n", i, channels[i])
