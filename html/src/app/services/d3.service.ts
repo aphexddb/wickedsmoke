@@ -1,8 +1,16 @@
 import { Injectable, ElementRef } from '@angular/core';
-import * as d3 from './d3.service.bundle';
+import * as d3 from 'd3';
 
 export type D3 = typeof d3;
 
+// TODO add gauge: http://bl.ocks.org/brattonc/5e5ce9beee483220e2f6
+
+/**
+ * Margin values
+ * 
+ * @export
+ * @interface Margin
+ */
 export interface Margin {
   top: number;
   right: number;
@@ -10,6 +18,12 @@ export interface Margin {
   left: number;
 }
 
+/**
+ * Configuration for a line graph
+ * 
+ * @export
+ * @interface LineGraph
+ */
 export interface LineGraph {
   title?: string;
   element: ElementRef;
@@ -174,30 +188,51 @@ export class D3Service {
 
     // mouseover focus elemement
     const bisectDate = d3.bisector(function(d:any) { return d.date; }).left;        
-    function mousemove() {
+    function mousemove() {      
       const x0:any = x.invert(d3.mouse(this)[0]);
       const i = bisectDate(data, x0, 1);
       const d0 = data[i - 1];
       const d1 = data[i];
       const d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-      focus.attr("transform", "translate(" + x(d.date) + "," + y(d.value) + ")");
-      focus.select("text").text(lineGraph.formatHoverText(d.value));
+
+      // translate circle to position of value on line
+      focus.attr("transform", "translate(" + x(d.date) + "," + y(d.value) + ")");      
+      // translate line vertically to always be aligned in the graph vertical space
+      focus.select("line")
+        .attr("transform", "translate(0," + -y(d.value) + ")");
+      // display text on top of the line
+      focus.select("text")
+        .text(lineGraph.formatHoverText(d))
+        .attr("transform", "translate(-30," + -y(d.value - 10) + ")");
     }
-    if (data.length) {      
+    if (data.length) {              
+      // create hover element
       var focus = svg.append("g")
         .attr("class", "focus")
         .style("display", "none");
       focus.append("circle")
-        .attr("r", 9.5);
+        .attr("r", 2);
       focus.append("text")
+        .attr("class", "hover-text")
         .attr("x", 9)
-        .attr("dy", ".35em");
+      var hoverLine = focus.append("line")
+      .attr("class", "hover-line")
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", 0)
+        .attr("y2", height)
+
+      // attach hover element
       svg.append("rect")
         .attr("class", "overlay")
         .attr("width", width)
         .attr("height", height)
-        .on("mouseover", function() { focus.style("display", null); })
-        .on("mouseout", function() { focus.style("display", "none"); })
+        .on("mouseover", function() { 
+          focus.style("display", null); 
+        })
+        .on("mouseout", function() {
+          focus.style("display", "none");           
+        })
         .on("mousemove", mousemove);
       }
 

@@ -43,8 +43,10 @@ export class GraphComponent implements OnInit {
       formatValue: (value: any) => {
         return value;
       },
-      formatHoverText: (value: any): any => {
-        return Number((value).toFixed(1));
+      formatHoverText: (d: any): string => {
+        const value = Number((d.value).toFixed(1)) + '°';
+        const label = moment(d.date).format('h:mm A');
+        return value + ' @ ' + label;
       }
     });
   }

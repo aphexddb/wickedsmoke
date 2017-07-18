@@ -1,5 +1,5 @@
 .d3-graph {
-  height: 300px;
+  height: 200px;
   border: 1px solid black;
 }
 
@@ -33,13 +33,30 @@
   pointer-events: all;
 }
 
-* .focus circle {
-  fill: none;
-  stroke: steelblue;
-}
+* .focus {
+  text {
+    font-family: Roboto, Arial;
 
-* .focus text {
-  font-family: Roboto, Arial;
+    .label {
+      border: 10px solid blue;
+    }
+    .value {
+      border: 10px solid blue;
+    }
+  }
+  circle {
+    r: 4.5;
+    stroke: none;
+    fill: #FF0000;
+  } 
+  .hover-text {
+    font-size: smaller;  
+  }
+  .hover-line {
+    stroke-width: 2;
+    stroke: #FF0000;
+    fill: none;          
+  }
 }
 
 * .header {
