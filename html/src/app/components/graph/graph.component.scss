@@ -1,0 +1,71 @@
+.d3-graph {
+  height: 300px;
+  border: 1px solid black;
+}
+
+/* Styles that apply to D3 generated SVG content */
+
+* path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+* .axis path,
+* .axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+* .axis-label {
+  fill: #000;
+  font-weight: bold;
+}
+
+* g circle.dot {
+  fill: none;
+}
+
+* .overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+* .focus circle {
+  fill: none;
+  stroke: steelblue;
+}
+
+* .focus text {
+  font-family: Roboto, Arial;
+}
+
+* .header {
+    cursor: default;
+    font-size: 1.2rem;
+}
+
+* .header {
+  font-family: Roboto, Arial;
+  font-size: 1.2rem;
+  fill: #ccc;
+}
+
+* .no-data {
+  font-family: Roboto, Arial;
+  fill: red;
+  font-weight: bold;
+}
+
+* g.x.axis {
+  text {
+    font-family: Roboto, Arial;
+  }
+}
+* g.y.axis {
+  text {
+    font-family: Roboto, Arial;
+  }
+}  

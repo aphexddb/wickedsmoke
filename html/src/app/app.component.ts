@@ -40,6 +40,7 @@ export class AppComponent {
     );
   }
 
+
   start() {
     this.store.dispatch(new app.CookStartAction());
   }
@@ -65,5 +66,5 @@ export class AppComponent {
     this.store.dispatch(new app.ResetAction());
     this.store.dispatch(new probes.ResetAction());
   }
-
+  
 }

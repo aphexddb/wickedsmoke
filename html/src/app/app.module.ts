@@ -11,6 +11,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 // import { MaterialModule } from '@angular/material';
 
 import { ProbeService } from './services/probe.service'
+import { D3Service } from './services/d3.service'
 
 import { AppComponent } from './app.component';
 // import { ComponentsModule } from './components';
@@ -20,13 +21,15 @@ import { AppComponent } from './app.component';
 
 import { routes } from './routes';
 import { reducer } from './reducers';
-import { ProbeComponent } from './probe/probe.component';
+import { ProbeComponent } from './components/probe/probe.component';
+import { GraphComponent } from './components/graph/graph.component';
 // import { schema } from './db';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ProbeComponent
+    ProbeComponent,
+    GraphComponent
   ],
   imports: [
     CommonModule,
@@ -37,6 +40,7 @@ import { ProbeComponent } from './probe/probe.component';
     StoreDevtoolsModule.instrumentOnlyWithExtension()                 
   ],
   providers: [
+    D3Service,
     ProbeService
   ],
   bootstrap: [AppComponent]
