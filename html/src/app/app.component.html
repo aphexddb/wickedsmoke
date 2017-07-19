@@ -1,3 +1,10 @@
+<!-- <pre>
+{{ (cook$ | async) | json }}  
+</pre> -->
+
+<div *ngIf="(hardwareOk$ | async)">Hardware OK</div>
+<div *ngIf="!(hardwareOk$ | async)">Hardware Offline</div>
+
 <div class="header">
 
   <div *ngIf="(cooking$ | async)">
@@ -14,7 +21,7 @@
 
 </div>
 
-<section *ngIf="(cooking$ | async)">
+<section *ngIf="(hardwareOk$ | async)">
 
   <div class="probes">
     <app-probe [probe]="probe0$ | async"></app-probe>

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-// import { IProbe } from '../cook'
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-probe',

@@ -1,56 +1,29 @@
 /**
- * Represents a temprature probe
+ * Represents an individual probe
  * 
  * @export
- * @interface IProbe
+ * @interface CookProbe
  */
-export interface IProbe {
-  channel: number;
-	name: string;
-  voltage: number;
+export interface CookProbe {
   celsius: number;
+  channel: number;
+  targetReached: boolean;
   targetTemp: number;
 }
 
 /**
- * Represents new data for an individual probe
+ * Represents the state of a cook
  * 
  * @export
- * @interface IProbeData
+ * @interface Cook
  */
-export interface IProbeData {
-    c: number;
-    f: number;
-    voltage: number;
-}
-
-/**
- * Represents new data update for all probes
- * 
- * @export
- * @interface IProbeUpdate
- */
-export interface IProbeUpdate {
-    probe0: IProbeData;
-    probe1: IProbeData;
-    probe2: IProbeData;
-    probe3: IProbeData;
-}
-
-/**
- * Creates a new object that implements IProbe
- * 
- * @export
- * @param {number} channel 
- * @param {string} name 
- * @returns {IProbe} 
- */
-export function NewProbe(channel: number, name: string): IProbe {
-  return <IProbe> {
-    channel: channel,
-    name: name,
-    voltage: 0,
-    celsius: 0,
-    targetTemp: 0,
-  }
+export interface Cook {
+    cookProbes: CookProbe[];
+    cooking: boolean;
+    hardwareOK: boolean;
+    hardwareStatus: string;
+    label: string;
+    startTime: Date;
+    stopTime: Date;
+    uptimeSince: Date;
 }

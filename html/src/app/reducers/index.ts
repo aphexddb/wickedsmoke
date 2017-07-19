@@ -34,9 +34,11 @@ export function reducer(state: any, action: any) {
 
 export const getAppState = (state: State) => state.app;
 export const getCooking = createSelector(getAppState, fromApp.getCooking);
+export const getCook = createSelector(getAppState, fromApp.getCook);
+export const getHardwareOk = createSelector(getAppState, fromApp.getHardwareOk);
+export const getProbe0 = createSelector(getAppState, fromApp.getProbe0);
+export const getProbe1 = createSelector(getAppState, fromApp.getProbe1);
+export const getProbe2 = createSelector(getAppState, fromApp.getProbe2);
+export const getProbe3 = createSelector(getAppState, fromApp.getProbe3);
 
 export const getProbesState = (state: State) => state.probes;
-export const getProbe0 = createSelector(getProbesState, fromProbes.getProbe0);
-export const getProbe1 = createSelector(getProbesState, fromProbes.getProbe1);
-export const getProbe2 = createSelector(getProbesState, fromProbes.getProbe2);
-export const getProbe3 = createSelector(getProbesState, fromProbes.getProbe3);

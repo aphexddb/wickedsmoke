@@ -5,7 +5,7 @@ import { ProbeService } from './services/probe.service'
 import * as fromRoot from './reducers';
 import * as app from './actions/app';
 import * as probes from './actions/probes';
-import { IProbe, IProbeData, IProbeUpdate } from './cook'
+import { Cook, CookProbe } from './cook'
 
 @Component({
   selector: 'app-root',
@@ -15,31 +15,28 @@ import { IProbe, IProbeData, IProbeUpdate } from './cook'
 })
 export class AppComponent {
   cooking$: Observable<boolean>;
-  probe0$: Observable<IProbe>;
-  probe1$: Observable<IProbe>;
-  probe2$: Observable<IProbe>;
-  probe3$: Observable<IProbe>;
+  cook$: Observable<Cook>;
+  hardwareOk$: Observable<boolean>;
+  probe0$: Observable<CookProbe>;
+  probe1$: Observable<CookProbe>;
+  probe2$: Observable<CookProbe>;
+  probe3$: Observable<CookProbe>;
 
   constructor(private store: Store<fromRoot.State>,
               private probeService: ProbeService) {
-    // get probe data
+    this.cooking$ = store.select(fromRoot.getCooking);
+    this.hardwareOk$ = store.select(fromRoot.getHardwareOk);
+    this.cook$ = store.select(fromRoot.getCook);
     this.probe0$ = store.select(fromRoot.getProbe0);
     this.probe1$ = store.select(fromRoot.getProbe1);
     this.probe2$ = store.select(fromRoot.getProbe2);
     this.probe3$ = store.select(fromRoot.getProbe3);
-    this.cooking$ = store.select(fromRoot.getCooking);
 
-    // subscribe to probe service data updates
-    this.probeService.messages.subscribe(
-      probeUpdate => {        
-        if (probeUpdate.probe0) { this.store.dispatch(new probes.UpdateProbe0Aaction(probeUpdate.probe0)); }
-        if (probeUpdate.probe1) { this.store.dispatch(new probes.UpdateProbe1Aaction(probeUpdate.probe1)); }
-        if (probeUpdate.probe2) { this.store.dispatch(new probes.UpdateProbe2Aaction(probeUpdate.probe2)); }
-        if (probeUpdate.probe3) { this.store.dispatch(new probes.UpdateProbe3Aaction(probeUpdate.probe3)); }      
-      }
+    // subscribe to cook service data updates
+    this.probeService.messages.subscribe(      
+      cook => this.store.dispatch(new app.CookUpdateAction(cook))
     );
   }
-
 
   start() {
     this.store.dispatch(new app.CookStartAction());
@@ -64,7 +61,6 @@ export class AppComponent {
 
   reset() {
     this.store.dispatch(new app.ResetAction());
-    this.store.dispatch(new probes.ResetAction());
   }
   
 }

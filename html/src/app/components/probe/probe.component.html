@@ -1,17 +1,16 @@
 <div class="probe">  
-  <h2>{{ probe.name }}</h2>
+  <h2>Probe {{ probe.channel }}</h2>
   <div class="probe-data">
-    <div class="voltage">
-      <span class="label">Voltage</span>
-      <span class="data">{{ probe.voltage }}</span>
+    <div class="currentTemp">
+      <span class="label">Temp</span>
+      <span class="data">{{ probe.celsius | number:'2.0-1' }}°c</span>
     </div>
-    <div class="celsius">
-      <span class="label">Celsius</span>
-      <span class="data">{{ probe.celsius }}</span>
-    </div>
-    <div class="targetTemp">
+    <div *ngIf="probe.targetTemp" class="targetTemp">
       <span class="label">Target Temperature</span>
       <span class="data">{{ probe.targetTemp }}</span>
+    </div>
+    <div *ngIf="probe.targetTemp && probe.targetReached" class="targetReached">
+      Target Temp Reached!
     </div>
   </div> 
 </div>

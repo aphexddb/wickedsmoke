@@ -7,7 +7,7 @@ import { Observer } from 'rxjs/Observer';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/observable/dom/webSocket';
-import { IProbeData, IProbeUpdate } from '../cook'
+import { Cook, CookProbe } from '../cook'
 
 const PROBE_WS_URL = 'ws://localhost:8080/ws';
 
@@ -29,7 +29,7 @@ interface Frame {
  */
 @Injectable()
 export class ProbeService {
-    public messages: Observable<IProbeUpdate>;
+    public messages: Observable<Cook>;
     private ws: Subject<any>;
     
     constructor() {
@@ -50,17 +50,15 @@ export class ProbeService {
 }
 
 /**
- * Returns IProbeData from an object
+ * Returns Cook from an object
  * 
  * @param {*} object 
- * @returns {IProbeData} 
+ * @returns {Cook} 
  */
-function probeDataFromObject(object: any): IProbeData | null {
+function cookDateFromObject(object: any): Cook | null {
     if (object) {
-        return <IProbeData>{
-            c: object.c,
-            f: object.f,
-            voltage: object.voltage
+        return <Cook>{
+            ...object
         }
     } 
     return null;
@@ -72,15 +70,10 @@ function probeDataFromObject(object: any): IProbeData | null {
  * @param {Frame} frame 
  * @returns {IProbeUpdate} 
  */
-function parseFrame(frame: Frame): IProbeUpdate | null {
+function parseFrame(frame: Frame): Cook | null {
     if (frame.constructor === Object) {
-        if (frame['probe0']) {
-            return <IProbeUpdate>{
-                probe0: probeDataFromObject(frame['probe0']),
-                probe1: probeDataFromObject(frame['probe1']),
-                probe2: probeDataFromObject(frame['probe2']),
-                probe3: probeDataFromObject(frame['probe3'])
-            };
+        if (frame['cookProbes'] && frame['uptimeSince']) {
+            return cookDateFromObject(frame);
         } else {
             console.log('unknown frame: ', frame);
         }
