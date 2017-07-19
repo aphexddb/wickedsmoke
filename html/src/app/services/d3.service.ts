@@ -1,6 +1,8 @@
 import { Injectable, ElementRef } from '@angular/core';
 import * as d3 from 'd3';
 
+export const maxTemp = 300;
+
 export type D3 = typeof d3;
 
 // TODO add gauge: http://bl.ocks.org/brattonc/5e5ce9beee483220e2f6
@@ -19,6 +21,17 @@ export interface Margin {
 }
 
 /**
+ * Represents a time-series data element
+ * 
+ * @export
+ * @interface DataElement
+ */
+export interface DataElement {
+  date: Date;
+  value: any
+}
+
+/**
  * Configuration for a line graph
  * 
  * @export
@@ -26,8 +39,8 @@ export interface Margin {
  */
 export interface LineGraph {
   title?: string;
-  element: ElementRef;
-  data: any;  
+  element?: ElementRef;
+  data?: DataElement[];  
   dateFormat?: string, // if set, the x axis will use this parse the date as a string
   margin: Margin;
   xAxisLabel?: string;
@@ -38,6 +51,25 @@ export interface LineGraph {
 }
 
 /**
+ * Internal representation of a line graph
+ * 
+ * @interface lg
+ */
+interface lg extends LineGraph {
+  width: number;
+  height: number;
+  axisLabelDist: number;
+  x?: any,
+  y?: any,
+  line?: any,
+  svg?: any,
+  xAxis? :any,
+  yAxis? :any,
+  xAxisElement?: any,
+  yAxisElement?: any
+}
+
+/**
  * Provides access to D3 and generates charts and graphs
  * 
  * @export
@@ -45,6 +77,9 @@ export interface LineGraph {
  */
 @Injectable()
 export class D3Service {
+  private lg: lg = <lg>{};
+  private lgData: DataElement[] = [];
+
   constructor() {}
 
   /**
@@ -68,11 +103,7 @@ export class D3Service {
    */
   public renderLineGraph(lineGraph: LineGraph): d3.Selection<any, {}, null, undefined> {    
     const element = lineGraph.element;
-    let data = lineGraph.data;
-    if (!data) {
-      data = [];
-    }
-
+    const data = lineGraph.data;
     const n = data.length;
     const axisLabelDist =  25;
     const width = element.nativeElement.offsetWidth - lineGraph.margin.left - lineGraph.margin.right;
@@ -120,7 +151,7 @@ export class D3Service {
     });
 
     // sort data by date
-    data.sort(function(a, b) {
+    data.sort(function(a: any, b: any) {
       return a.date - b.date;
     });
     
@@ -184,15 +215,15 @@ export class D3Service {
      svg.append("path")
       .datum(data)
       .attr("class", "line")
-      .attr("d", line);
+      .attr("d", <any>line);
 
     // mouseover focus elemement
     const bisectDate = d3.bisector(function(d:any) { return d.date; }).left;        
     function mousemove() {      
       const x0:any = x.invert(d3.mouse(this)[0]);
       const i = bisectDate(data, x0, 1);
-      const d0 = data[i - 1];
-      const d1 = data[i];
+      const d0:any = data[i - 1];
+      const d1:any = data[i];
       const d = x0 - d0.date > d1.date - x0 ? d1 : d0;
 
       // translate circle to position of value on line
@@ -249,7 +280,5 @@ export class D3Service {
 
     return svg;
   }
-
-
 
 }

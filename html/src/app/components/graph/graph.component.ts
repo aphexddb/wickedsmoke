@@ -4,7 +4,7 @@ import * as moment from 'moment';
 
 @Component({
   selector: 'app-graph',
-  template: '<div class="d3-graph" #graph></div>',
+  template: '<div class="d3-graph" #graph>{{svg}}</div><button (click)="renderLineGraph()">RENDER</button>',
   styleUrls: ['./graph.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
@@ -13,6 +13,7 @@ export class GraphComponent implements OnInit {
   @ViewChild('graph') graphContainer: ElementRef;
   private width: number;
   private height: number;
+  private svg: any;
 
   constructor(element: ElementRef,
               private ngZone: NgZone,
@@ -20,7 +21,11 @@ export class GraphComponent implements OnInit {
   }
 
   ngOnInit() {    
-    // fake temp data
+    this.renderLineGraph();
+  }
+
+  renderLineGraph() {
+        // fake temp data
     var startDate = new Date(2017,7,18,0,0,0);
     this.data = [];
     for(var i=0; i<= 200; i++)
@@ -32,10 +37,11 @@ export class GraphComponent implements OnInit {
       })
     }    
 
-    this.d3.renderLineGraph({
+    this.graphContainer.nativeElement.innerHTML = '';
+    const svg = this.d3.renderLineGraph({
       title: "Temp Probe X",
-      element: this.graphContainer,
       data: this.data,
+      element: this.graphContainer,
       margin: {top: 30, right: 10, bottom: 30, left: 40},
       formatDate: (d: Date) => {
         return moment(d).format('h:mm A');        
@@ -49,6 +55,10 @@ export class GraphComponent implements OnInit {
         return value + ' @ ' + label;
       }
     });
+
+    // put the graph into the container
+    // this.graphContainer.nativeElement.innerHTML = svg.html();
+    
   }
 
 }
