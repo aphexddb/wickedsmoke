@@ -7,29 +7,12 @@ package main
 import (
 	"flag"
 	"log"
-	"net/http"
 	"time"
 	// "github.com/mrmorphic/hwio"
 )
 
 var address = flag.String("address", ":8080", "http service address")
 var tickMs = flag.Int("tickMs", 1000, "interval in ms to broadcast cook data to clients")
-var hwPollMs = flag.Int("hwPollMs", 1000, "interval in ms to read values from hardware")
-
-// serveHomepage returns an HTTP page
-func serveHomepage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		log.Printf("HTTP 404 %s\n", r.URL)
-		http.Error(w, "Not found", 404)
-		return
-	}
-	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", 405)
-		return
-	}
-	log.Printf("HTTP GET %s\n", r.URL)
-	http.ServeFile(w, r, "index.html")
-}
 
 func main() {
 	flag.Parse()
@@ -52,7 +35,7 @@ func main() {
 		for {
 			select {
 			case <-ticker.C:
-				cook.SyncFromHardware()
+				cook.UpdateFromHw(hw.Read())
 				hub.Broadcast(cook.ToJSON())
 			case <-quit:
 				ticker.Stop()
@@ -62,33 +45,9 @@ func main() {
 	}()
 	defer close(quit)
 
-	// create a data channel for reading hardware, then start polling hardware
-	cHardware := make(chan *Hardware)
-	defer close(cHardware)
-	go hw.Read(*hwPollMs, cHardware)
-
-	// poll data channel
-	go func() {
-		for {
-			// update hardware in our cook
-			hw := <-cHardware
-			cook.UpdateProbeTemps(hw)
-
-			// assume HW is ok if we are reading data
-			cook.SetHardwareStatus(true)
-
-			time.Sleep(time.Duration(*hwPollMs) * time.Millisecond)
-		}
-	}()
-
 	// Start HTTP server
-	log.Printf("HTTP listening on: %s\n", *address)
-	http.HandleFunc("/", serveHomepage)
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		serveWs(hub, w, r)
-	})
-	err := http.ListenAndServe(*address, nil)
+	err := ServeHTTP(cook, hub, address)
 	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+		log.Fatal("http error: ", err)
 	}
 }

@@ -89,14 +89,6 @@ func (c *Cook) Stop() {
 	c.StopTime = &now
 }
 
-// SyncFromHardware updates probe temps from Hardware
-func (c *Cook) SyncFromHardware() {
-	c.Probes[0].Celsius = c.hardware.Probe0.Celsius
-	c.Probes[1].Celsius = c.hardware.Probe1.Celsius
-	c.Probes[2].Celsius = c.hardware.Probe2.Celsius
-	c.Probes[3].Celsius = c.hardware.Probe3.Celsius
-}
-
 // SetTargetTemp updates target temprature for a channel
 func (c *Cook) SetTargetTemp(channel int, temp float32) error {
 	if len(c.Probes) < channel {
@@ -106,19 +98,22 @@ func (c *Cook) SetTargetTemp(channel int, temp float32) error {
 	return nil
 }
 
-// UpdateProbeTemps sets the hardware
-func (c *Cook) UpdateProbeTemps(hw *Hardware) {
-	c.hardware.Probe0.Voltage = hw.Probe0.Voltage
-	c.hardware.Probe0.Celsius = hw.Probe0.Celsius
+// UpdateFromHw updates the cook from hardware state
+func (c *Cook) UpdateFromHw(hw *Hardware) {
+	// assume HW is ok if we are updating
+	c.SetHardwareStatus(true)
 
-	c.hardware.Probe1.Voltage = hw.Probe1.Voltage
-	c.hardware.Probe1.Celsius = hw.Probe1.Celsius
+	// update hw probes
+	c.hardware.Probe0 = hw.Probe0
+	c.hardware.Probe1 = hw.Probe1
+	c.hardware.Probe2 = hw.Probe2
+	c.hardware.Probe3 = hw.Probe3
 
-	c.hardware.Probe2.Voltage = hw.Probe2.Voltage
-	c.hardware.Probe2.Celsius = hw.Probe2.Celsius
-
-	c.hardware.Probe3.Voltage = hw.Probe3.Voltage
-	c.hardware.Probe3.Celsius = hw.Probe3.Celsius
+	// set cook probe data from HW
+	c.Probes[0].Celsius = c.hardware.Probe0.Celsius
+	c.Probes[1].Celsius = c.hardware.Probe1.Celsius
+	c.Probes[2].Celsius = c.hardware.Probe2.Celsius
+	c.Probes[3].Celsius = c.hardware.Probe3.Celsius
 }
 
 // ToJSON returns the current cook values to JSON

@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "aGJgIyxcAwlxb8tbu5g5XOVkPHU=",
+			"path": "github.com/gorilla/mux",
+			"revision": "d391bea3118c9fc17a88d62c9189bb791255e0ef",
+			"revisionTime": "2016-07-18T15:11:58Z"
+		},
+		{
 			"checksumSHA1": "GD6bB4d/l4Qf/r1/nlZSplzJdZg=",
 			"path": "github.com/gorilla/websocket",
 			"revision": "462d5c5828f6203e4047c47be2920315937be380",

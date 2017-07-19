@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log"
 	"math/rand"
-	"time"
 )
 
 var r = rand.New(rand.NewSource(99))
@@ -38,37 +37,35 @@ func NewHardware() *Hardware {
 }
 
 // Read checks the hardware on a cycle and updates the channel
-func (h *Hardware) Read(intervalMs int, c chan *Hardware) {
-	log.Printf("hardware: Reading hardware every %vms\n", intervalMs)
-	for {
-		// ask adc hardware for voltages
-		channels, err := h.adc.GetChannels()
-		if err != nil {
-			// log.Fatalf("hardware: error reading channels: %s\n", err)
-			log.Printf("hardware: error reading adc channels: %s\n", err)
-		} else {
-			for i := 0; i < len(channels); i++ {
-				log.Printf("adc channel %v voltage: %v\n", i, channels[i])
+func (h *Hardware) Read() *Hardware {
+	log.Println("hardware: Reading hardware")
 
-				// TODO - update probe data
-			}
+	// ask adc hardware for voltages
+	channels, err := h.adc.GetChannels()
+	if err != nil {
+		// log.Fatalf("hardware: error reading channels: %s\n", err)
+		log.Printf("hardware: error reading adc channels: %s\n", err)
+	} else {
+		for i := 0; i < len(channels); i++ {
+			log.Printf("adc channel %v voltage: %v\n", i, channels[i])
+
+			// TODO - update probe data
 		}
-
-		log.Println("hardware: TODO: Read -> get real HW values")
-		h.Probe0.Celsius = r.Float32() * 100
-		h.Probe1.Celsius = r.Float32() * 100
-		h.Probe2.Celsius = r.Float32() * 100
-		h.Probe3.Celsius = r.Float32() * 100
-
-		// convert all °C tempratures to °F
-		h.Probe0.Fahrenheit = CelsiusToFahrenheit(h.Probe0.Celsius)
-		h.Probe1.Fahrenheit = CelsiusToFahrenheit(h.Probe1.Celsius)
-		h.Probe2.Fahrenheit = CelsiusToFahrenheit(h.Probe2.Celsius)
-		h.Probe3.Fahrenheit = CelsiusToFahrenheit(h.Probe3.Celsius)
-
-		c <- h
-		time.Sleep(time.Duration(intervalMs) * time.Millisecond)
 	}
+
+	log.Println("hardware: TODO: Read -> get real HW values")
+	h.Probe0.Celsius = r.Float32() * 100
+	h.Probe1.Celsius = r.Float32() * 100
+	h.Probe2.Celsius = r.Float32() * 100
+	h.Probe3.Celsius = r.Float32() * 100
+
+	// convert all °C tempratures to °F
+	h.Probe0.Fahrenheit = CelsiusToFahrenheit(h.Probe0.Celsius)
+	h.Probe1.Fahrenheit = CelsiusToFahrenheit(h.Probe1.Celsius)
+	h.Probe2.Fahrenheit = CelsiusToFahrenheit(h.Probe2.Celsius)
+	h.Probe3.Fahrenheit = CelsiusToFahrenheit(h.Probe3.Celsius)
+
+	return h
 }
 
 // CelsiusToFahrenheit converts celsius to fahrenheit
