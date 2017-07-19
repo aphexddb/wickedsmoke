@@ -14,6 +14,7 @@ import { Cook, CookProbe } from './cook'
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  connected$: Observable<boolean>;
   cooking$: Observable<boolean>;
   cook$: Observable<Cook>;
   hardwareOk$: Observable<boolean>;
@@ -24,6 +25,7 @@ export class AppComponent {
 
   constructor(private store: Store<fromRoot.State>,
               private probeService: ProbeService) {
+    this.connected$ = store.select(fromRoot.getConnected);
     this.cooking$ = store.select(fromRoot.getCooking);
     this.hardwareOk$ = store.select(fromRoot.getHardwareOk);
     this.cook$ = store.select(fromRoot.getCook);
@@ -33,7 +35,7 @@ export class AppComponent {
     this.probe3$ = store.select(fromRoot.getProbe3);
 
     // subscribe to cook service data updates
-    this.probeService.messages.subscribe(      
+    this.probeService.getMessages().subscribe(      
       cook => this.store.dispatch(new app.CookUpdateAction(cook))
     );
   }
@@ -46,17 +48,11 @@ export class AppComponent {
     this.store.dispatch(new app.CookStopAction());
   }
 
-  setTemp0(t: number) {
-    this.store.dispatch(new probes.SetTargetTempProbe0Action(t));
-  }
-  setTemp1(t: number) {
-    this.store.dispatch(new probes.SetTargetTempProbe1Action(t));
-  }
-  setTemp2(t: number) {
-    this.store.dispatch(new probes.SetTargetTempProbe2Action(t));
-  }
-  setTemp3(t: number) {
-    this.store.dispatch(new probes.SetTargetTempProbe3Action(t));
+  setTemp(channel: number, temp: number) {
+    this.probeService.setTargetTemp(channel, temp).subscribe(
+      resp => console.log(resp['message']),
+      err => console.log(err)
+    )
   }
 
   reset() {

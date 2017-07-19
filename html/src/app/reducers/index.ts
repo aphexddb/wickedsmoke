@@ -33,6 +33,7 @@ export function reducer(state: any, action: any) {
 }
 
 export const getAppState = (state: State) => state.app;
+export const getConnected = createSelector(getAppState, fromApp.getConnected);
 export const getCooking = createSelector(getAppState, fromApp.getCooking);
 export const getCook = createSelector(getAppState, fromApp.getCook);
 export const getHardwareOk = createSelector(getAppState, fromApp.getHardwareOk);

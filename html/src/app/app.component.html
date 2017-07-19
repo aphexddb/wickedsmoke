@@ -1,6 +1,7 @@
+<div *ngIf="!(connected$ | async)" class="disconnected">DISCONNECTED</div>
 <!-- <pre>
 {{ (cook$ | async) | json }}  
-</pre> -->
+</pre>   -->
 
 <div *ngIf="(hardwareOk$ | async)">Hardware OK</div>
 <div *ngIf="!(hardwareOk$ | async)">Hardware Offline</div>
@@ -9,11 +10,6 @@
 
   <div *ngIf="(cooking$ | async)">
     <button (click)="stop()">Stop</button>
-
-    <button (click)="setTemp0(100)">Probe 0 set target temp</button>
-    <button (click)="setTemp1(100)">Probe 1 set target temp</button>
-    <button (click)="setTemp2(100)">Probe 2 set target temp</button>
-    <button (click)="setTemp3(100)">Probe 3 set target temp</button>
   </div>
   <div *ngIf="!(cooking$ | async)">
     <button (click)="start()">Start Cooking</button>
@@ -22,6 +18,11 @@
 </div>
 
 <section *ngIf="(hardwareOk$ | async)">
+
+  <button (click)="setTemp(0, 100)">Probe 0 set target temp</button>
+  <button (click)="setTemp(1, 100)">Probe 1 set target temp</button>
+  <button (click)="setTemp(2, 100)">Probe 2 set target temp</button>
+  <button (click)="setTemp(3, 100)">Probe 3 set target temp</button>
 
   <div class="probes">
     <app-probe [probe]="probe0$ | async"></app-probe>

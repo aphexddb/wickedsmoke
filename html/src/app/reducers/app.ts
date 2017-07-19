@@ -4,12 +4,14 @@ import * as app from '../actions/app';
 import { Cook } from '../cook'
 
 export interface State {
+	connected: boolean;
 	cooking: boolean;
 	hardwareOk: boolean;
 	cook: Cook;
 }
 
 const initialState: State = {
+	connected: false,
 	cooking: false,
 	hardwareOk: false,
 	cook: null,
@@ -33,9 +35,22 @@ export function appReducer(state = initialState, action: app.Actions): State {
 		
 		case app.COOK_DATA_UPDATE:
 			return {
+				...state,
 				cooking: action.payload.cooking,
 				cook: action.payload,
 				hardwareOk: action.payload.hardwareOK
+			}
+		
+		case app.WEBSOCKET_CONNECTED:
+			return {
+				...state,
+				connected: true
+			}
+
+		case app.WEBSOCKET_DISCONNECTED:
+			return {
+				...state,
+				connected: false
 			}
 		
 		case app.APP_RESET:
@@ -47,6 +62,7 @@ export function appReducer(state = initialState, action: app.Actions): State {
 }
 
 
+export const getConnected = (state: State) => state.connected;
 export const getCooking = (state: State) => state.cooking;
 export const getCook = (state: State) => state.cook;
 export const getHardwareOk = (state: State) => state.hardwareOk;

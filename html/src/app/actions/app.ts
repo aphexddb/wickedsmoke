@@ -1,10 +1,20 @@
 import { Action } from '@ngrx/store';
 import { Cook } from '../cook';
 
+export const WEBSOCKET_CONNECTED = '[App] Websocket Connected';
+export const WEBSOCKET_DISCONNECTED = '[App] Websocket Disconnected';
 export const COOK_DATA_UPDATE = '[Cook] Cook Data Update';
 export const COOK_START = '[Cook] Start';
 export const COOK_STOP = '[Cook] Stop';
 export const APP_RESET = '[Cook] Reset';
+
+
+export class WebsocketConnectedAction implements Action {
+  readonly type = WEBSOCKET_CONNECTED;
+}
+export class WebsocketDisonnectedAction implements Action {
+  readonly type = WEBSOCKET_DISCONNECTED;
+}
 
 export class CookStartAction implements Action {
   readonly type = COOK_START;
@@ -25,7 +35,9 @@ export class CookUpdateAction implements Action {
 }
 
 export type Actions
-  = CookStartAction
+  = WebsocketConnectedAction
+  | WebsocketDisonnectedAction
+  | CookStartAction
   | CookStopAction
   | CookUpdateAction
   | ResetAction;
