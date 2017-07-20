@@ -41,11 +41,17 @@ export class AppComponent {
   }
 
   start() {
-    this.store.dispatch(new app.CookStartAction());
+    this.probeService.cookStart().subscribe(
+      resp => console.log(resp['message']),
+      err => console.log(err)
+    )
   }
 
   stop() {
-    this.store.dispatch(new app.CookStopAction());
+    this.probeService.cookStop().subscribe(
+      resp => console.log(resp['message']),
+      err => console.log(err)
+    )
   }
 
   setTemp(channel: number, temp: number) {
@@ -53,10 +59,6 @@ export class AppComponent {
       resp => console.log(resp['message']),
       err => console.log(err)
     )
-  }
-
-  reset() {
-    this.store.dispatch(new app.ResetAction());
   }
   
 }

@@ -29,48 +29,74 @@ interface Frame {
 };
 
 /**
- * Provides websocket connection to temprature probe data
+ * Provides websocket connection and REST calls to temprature probe service
  * 
  * @export
  * @class ProbeService
  */
 @Injectable()
 export class ProbeService {
-    //public messages: Observable<Cook>;
     private messages: Subject<Cook>;
     private ws: Subject<any>;
+    private connected: boolean;
+    private connected$: Observable<boolean>;
     
     constructor(private http: Http,
                 private store: Store<fromRoot.State>) {
+        
         // start by setting disconnected state in the store
-        this.store.dispatch(new app.WebsocketDisonnectedAction())
+        this.store.dispatch(new app.WebsocketDisconnectedAction())
         this.messages = new Subject<Cook>();
+        
+        this.connected$ = this.store.select(fromRoot.getConnected);
+        this.connected$.subscribe(connected => this.connected = connected)
+
         this.connect();
     }
 
     /**
-     * Returns an observable for websocket frames
+     * Connects to a websocket and attempts to retry on disconnect
      * 
-     * @returns {Observable<Cook>} 
+     * @returns void
      * @memberof ProbeService
      */
-    getMessages(): Observable<Cook> {
-        return this.messages.asObservable();
-    }
-
-    private connect() {
-        this.store.dispatch(new app.WebsocketConnectedAction())
+    private connect() {        
         this.ws = Observable.webSocket(WS_URL);
         this.ws.subscribe(
-            frame => this.messages.next(parseFrame(frame)),
+            frame => {
+                this.messages.next(this.parseFrame(frame));
+                if (!this.connected) {
+                    this.store.dispatch(new app.WebsocketConnectedAction())
+                }
+            },
             error => {
-                this.store.dispatch(new app.WebsocketDisonnectedAction())
+                this.store.dispatch(new app.WebsocketDisconnectedAction())
                 setTimeout(()=>{
                     this.connect();
                 }, retrySeconds * 1000);
             }
         )
     }
+
+
+    /**
+     * Reads a data frame from websocket and determines it's type
+     * 
+     * @param {Frame} frame 
+     * @returns {Cook | null} 
+     */
+    private parseFrame(frame: Frame): Cook | null {
+        if (frame.constructor === Object) {
+            // check for some expected properties
+            if (frame['cookProbes'] && frame['uptimeSince']) {
+                return Object.assign({...frame});
+            } else {
+                console.log('read unknown frame: ', frame);
+            }
+        }
+        return null;
+    }
+
 
     /**
      * Sets target temp for a probe on a specific channel
@@ -83,63 +109,35 @@ export class ProbeService {
         return this.http.post(url, {temp: temp})
             .map(res => res.json())
     }
-}
 
-/**
- * Returns Cook from an object
- * 
- * @param {*} object 
- * @returns {Cook} 
- */
-function cookDateFromObject(object: any): Cook | null {
-    if (object) {
-        return <Cook>{
-            ...object
-        }
-    } 
-    return null;
-}
-
-/**
- * Reads a frame from websocket and determines it's type
- * 
- * @param {Frame} frame 
- * @returns {Cook | null} 
- */
-function parseFrame(frame: Frame): Cook | null {
-    if (frame.constructor === Object) {
-        if (frame['cookProbes'] && frame['uptimeSince']) {
-            return cookDateFromObject(frame);
-        } else {
-            console.log('unknown frame: ', frame);
-        }
+    /**
+     * Starts the cook
+     * 
+     */
+    cookStart() : Observable<Response> {
+        const url = REST_URL + "/cook/start";
+        return this.http.post(url, {})
+            .map(res => res.json())
     }
-    return null;
-}
 
-// /**
-//  * Opens a connection to the websocket
-//  * 
-//  * @template T 
-//  * @param {Observable<T>} cold 
-//  * @returns {Observable<T>} 
-//  */
-// function makeHot<T>(cold: Observable<T>): Observable<T> {
-//     let subject = new Subject();
-//     let refs = 0;
-//     return Observable.create((observer: Observer<T>) => {
-//         let coldSub: Subscription;
-//         if (refs === 0) {
-//             coldSub = cold.subscribe(o => subject.next(o));
-//         }
-//         refs++;
-//         let hotSub = subject.subscribe(observer);
-//         return () => {
-//             refs--;
-//             if (refs === 0) {
-//                 coldSub.unsubscribe();
-//             }
-//             hotSub.unsubscribe();
-//         };
-//     });
-// }
+    /**
+     * Stops the cook
+     * 
+     */
+    cookStop() : Observable<Response> {
+        const url = REST_URL + "/cook/stop";
+        return this.http.post(url, {})
+            .map(res => res.json())
+    }    
+
+    /**
+     * Returns an observable for websocket frames
+     * 
+     * @returns {Observable<Cook>} 
+     * @memberof ProbeService
+     */
+    getMessages(): Observable<Cook> {
+        return this.messages.asObservable();
+    }
+
+}

@@ -88,9 +88,28 @@ func ServeHTTP(cook *Cook, hub *Hub, address *string) error {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", serveHomepage).Methods("GET")
+
 	r.HandleFunc("/probe/{channel}/setTargetTemp", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		setTargetTemp(cook, w, r)
 	})).Methods("POST")
+
+	r.HandleFunc("/cook/start", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cook.Start()
+		cmdResp := &CmdResponse{
+			Message: "Cook started",
+		}
+		resp, _ := json.Marshal(cmdResp)
+		io.WriteString(w, string(resp))
+	})).Methods("POST")
+	r.HandleFunc("/cook/stop", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cook.Stop()
+		cmdResp := &CmdResponse{
+			Message: "Cook stopped",
+		}
+		resp, _ := json.Marshal(cmdResp)
+		io.WriteString(w, string(resp))
+	})).Methods("POST")
+
 	r.HandleFunc("/ws", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, w, r)
 	}))

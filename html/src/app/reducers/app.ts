@@ -52,9 +52,6 @@ export function appReducer(state = initialState, action: app.Actions): State {
 				...state,
 				connected: false
 			}
-		
-		case app.APP_RESET:
-			return initialState;
 
 		default:
 			return state;

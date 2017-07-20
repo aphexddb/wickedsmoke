@@ -80,6 +80,7 @@ func (c *Cook) Start() {
 	now := time.Now()
 	c.Cooking = true
 	c.StartTime = &now
+	c.StopTime = nil
 }
 
 // Stop starts a cook

@@ -17,7 +17,7 @@ type Probe struct {
 
 // Hardware represents all of the the temprature probes
 type Hardware struct {
-	adc    *RaspPiOAnalog
+	// adc    *RaspPiOAnalog
 	Probe0 Probe `json:"probe0"`
 	Probe1 Probe `json:"probe1"`
 	Probe2 Probe `json:"probe2"`
@@ -28,7 +28,7 @@ type Hardware struct {
 func NewHardware() *Hardware {
 	log.Println("hardware: TODO: NewHardware -> use NewRaspPiOAnalog")
 	return &Hardware{
-		adc:    NewRaspPiOAnalog(),
+		// adc:    NewRaspPiOAnalog(),
 		Probe0: Probe{Voltage: 0, Celsius: 0, Fahrenheit: 0},
 		Probe1: Probe{Voltage: 0, Celsius: 0, Fahrenheit: 0},
 		Probe2: Probe{Voltage: 0, Celsius: 0, Fahrenheit: 0},
@@ -40,18 +40,18 @@ func NewHardware() *Hardware {
 func (h *Hardware) Read() *Hardware {
 	log.Println("hardware: Reading hardware")
 
-	// ask adc hardware for voltages
-	channels, err := h.adc.GetChannels()
-	if err != nil {
-		// log.Fatalf("hardware: error reading channels: %s\n", err)
-		log.Printf("hardware: error reading adc channels: %s\n", err)
-	} else {
-		for i := 0; i < len(channels); i++ {
-			log.Printf("adc channel %v voltage: %v\n", i, channels[i])
+	// // ask adc hardware for voltages
+	// channels, err := h.adc.GetChannels()
+	// if err != nil {
+	// 	// log.Fatalf("hardware: error reading channels: %s\n", err)
+	// 	log.Printf("hardware: error reading adc channels: %s\n", err)
+	// } else {
+	// 	for i := 0; i < len(channels); i++ {
+	// 		log.Printf("adc channel %v voltage: %v\n", i, channels[i])
 
-			// TODO - update probe data
-		}
-	}
+	// 		// TODO - update probe data
+	// 	}
+	// }
 
 	log.Println("hardware: TODO: Read -> get real HW values")
 	h.Probe0.Celsius = r.Float32() * 100

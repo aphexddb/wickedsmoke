@@ -1,14 +1,72 @@
-.disconnected {
-  width: 100%;
+div.disconnected {
+  // position: fixed;
+	// top: 0;
+	// right: 0;
+  // bottom: 0;
+  // background-image: url("../assets/disconnected.png");
+  // background-repeat: no-repeat;
+	// min-width: 100%;
+	// min-height: 100%;
+	// -webkit-filter: blur(4px);
+	// -o-filter: blur(4px);
+	// filter: blur(4px);
+	// z-index: -100;
+	// -webkit-background-size: cover;
+	// -moz-background-size: cover;
+	// -ms-background-size: cover;
+	// -o-background-size: cover;
+  // background-size: cover;
+  
+  .disconnected-text {
+    background-image: url("../assets/disconnected.png");
+    background-repeat: no-repeat;
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    top: 50%;
+    left: 50%;
+    margin-left: -50px; /* margin is -0.5 * dimension */
+    margin-top: -25px;
+    z-index: -200;
+  }
+}
+
+.container {
+  margin: 6px;
+}
+
+.status {
+  display: flex;
+  flex-direction: row;
+  margin: auto;  
   height: 20px;
   padding: 10px;
-  margin: 0;
-  text-align: center;
-  font-weight: bolder;
-  font-size: larger;
-  color: red;
-  background-color: #000;  
+  background-color: #CCC;    
+
+  div {
+    margin: auto;
+  }
+
+  .connected {
+    text-align: center;
+    font-weight: bolder;
+    font-size: larger;
+    color: green;    
+  }
+  .disconnected {
+    text-align: center;
+    font-weight: bolder;
+    font-size: larger;
+    color: red;
+  }
+  .cooking {
+    color: white;
+  }
+  .stopped {
+    color: white;
+  }
 }
+
 
 .probes {
   display: flex;

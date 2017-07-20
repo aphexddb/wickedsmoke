@@ -1,39 +1,40 @@
-<div *ngIf="!(connected$ | async)" class="disconnected">DISCONNECTED</div>
-<!-- <pre>
-{{ (cook$ | async) | json }}  
-</pre>   -->
+<!-- overlay on disconnect -->
+<div [ngClass]="{'disconnected': !(connected$ | async) }">
+  <div class="disconnected-text">DISCOED</div>
 
-<div *ngIf="(hardwareOk$ | async)">Hardware OK</div>
-<div *ngIf="!(hardwareOk$ | async)">Hardware Offline</div>
+  <div class="container">
+    <div class="status">
+      <div *ngIf="(cooking$ | async)" class="cooking">
+        <button (click)="stop()">Stop Cooking</button>
+      </div>
+      <div *ngIf="!(cooking$ | async)" class="stopped">
+        <button (click)="start()">Start Cooking</button>
+      </div>
+      <div *ngIf="(connected$ | async)" class="connected">CONNECTED</div>
+      <div *ngIf="!(connected$ | async)" class="disconnected">DISCONNECTED</div>
+    </div>
 
-<div class="header">
+    <!-- <pre>
+    {{ (cook$ | async) | json }}  
+    </pre>   -->
 
-  <div *ngIf="(cooking$ | async)">
-    <button (click)="stop()">Stop</button>
+    <section *ngIf="(hardwareOk$ | async)">
+
+      <button (click)="setTemp(0, 100)">Probe 0 set target temp</button>
+      <button (click)="setTemp(1, 100)">Probe 1 set target temp</button>
+      <button (click)="setTemp(2, 100)">Probe 2 set target temp</button>
+      <button (click)="setTemp(3, 100)">Probe 3 set target temp</button>
+
+      <div class="probes">
+        <app-probe [probe]="probe0$ | async"></app-probe>
+        <app-probe [probe]="probe1$ | async"></app-probe>
+        <app-probe [probe]="probe2$ | async"></app-probe>
+        <app-probe [probe]="probe3$ | async"></app-probe>
+      </div>
+
+    </section>
+
+    <app-graph [data]="[]"></app-graph> 
   </div>
-  <div *ngIf="!(cooking$ | async)">
-    <button (click)="start()">Start Cooking</button>
-  </div>
-
 </div>
-
-<section *ngIf="(hardwareOk$ | async)">
-
-  <button (click)="setTemp(0, 100)">Probe 0 set target temp</button>
-  <button (click)="setTemp(1, 100)">Probe 1 set target temp</button>
-  <button (click)="setTemp(2, 100)">Probe 2 set target temp</button>
-  <button (click)="setTemp(3, 100)">Probe 3 set target temp</button>
-
-  <div class="probes">
-    <app-probe [probe]="probe0$ | async"></app-probe>
-    <app-probe [probe]="probe1$ | async"></app-probe>
-    <app-probe [probe]="probe2$ | async"></app-probe>
-    <app-probe [probe]="probe3$ | async"></app-probe>
-  </div>
-
-  <button (click)="reset()">Reset</button>
-
-</section>
-
- <app-graph [data]="[1,2,3,4,5]"></app-graph> 
 

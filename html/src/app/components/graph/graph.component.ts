@@ -4,7 +4,7 @@ import * as moment from 'moment';
 
 @Component({
   selector: 'app-graph',
-  template: '<div class="d3-graph" #graph>{{svg}}</div><button (click)="renderLineGraph()">RENDER</button>',
+  template: '<div class="d3-graph" #graph>{{svg}}</div><button (click)="renderLineGraph()">RE-RENDER</button>',
   styleUrls: ['./graph.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
