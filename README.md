@@ -30,7 +30,7 @@ TBD - probably a tupperware type box to start.
 
 ## Software
 
-Would ideally like to write in app in Go (ex: https://github.com/mrmorphic/hwio) however if this is too annoying due to lack of easy GPIO support Python it is.
+Dependencies managed via https://github.com/kardianos/govendor.
 
 ## Related Projects / Ideas / Reading / Tools
 
