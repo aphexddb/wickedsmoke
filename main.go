@@ -1,14 +1,9 @@
-// dependencies managed via https://github.com/kardianos/govendor
 package main
-
-// TODO's
-// - maybe charting https://github.com/wcharczuk/go-chart
 
 import (
 	"flag"
 	"log"
 	"time"
-	// "github.com/mrmorphic/hwio"
 )
 
 var address = flag.String("address", ":8080", "http service address")
@@ -19,11 +14,17 @@ func main() {
 	log.SetFlags(log.Lshortfile)
 	log.Println("Wickedsmoke starting")
 
-	// create new hardware and cook
-	hw := NewHardware()
-	cook := NewCook(hw)
+	// Create new connection to I2C bus on 2 line with address 0x27
+	i2c, hwErr := NewI2C(0x27, 2)
+	if hwErr != nil {
+		log.Fatalln(hwErr)
+	}
+	// Free I2C connection on exit
+	defer i2c.Close()
 
-	// create the message hub
+	// create new hardware, cook and message hub
+	hardware := NewHardware(i2c)
+	cook := NewCook()
 	hub := NewHub()
 	go hub.Run()
 
@@ -35,7 +36,15 @@ func main() {
 		for {
 			select {
 			case <-ticker.C:
-				cook.UpdateFromHw(hw.Read())
+				// update all temp probes
+				cook.Probes[0].SetTemperature(hardware.Probe0.Celsius)
+				cook.Probes[1].SetTemperature(hardware.Probe1.Celsius)
+				cook.Probes[2].SetTemperature(hardware.Probe2.Celsius)
+				cook.Probes[3].SetTemperature(hardware.Probe3.Celsius)
+
+				// assume HW is ok if we are updating
+				cook.SetHardwareStatus(true, "OK")
+
 				hub.Broadcast(cook.ToJSON())
 			case <-quit:
 				ticker.Stop()

@@ -10,14 +10,14 @@ var r = rand.New(rand.NewSource(99))
 
 // Probe represents a physical temprature probe
 type Probe struct {
-	Voltage    float32 `json:"voltage"`
-	Celsius    float32 `json:"c"`
-	Fahrenheit float32 `json:"f"`
+	Voltage float32 `json:"voltage"`
+	Celsius float32 `json:"celsius"`
 }
 
 // Hardware represents all of the the temprature probes
 type Hardware struct {
 	// adc    *RaspPiOAnalog
+	i2c    *I2C
 	Probe0 Probe `json:"probe0"`
 	Probe1 Probe `json:"probe1"`
 	Probe2 Probe `json:"probe2"`
@@ -25,18 +25,20 @@ type Hardware struct {
 }
 
 // NewHardware creates a new instance of the hardware
-func NewHardware() *Hardware {
-	log.Println("hardware: TODO: NewHardware -> use NewRaspPiOAnalog")
+func NewHardware(i2c *I2C) *Hardware {
+	log.Println("hardware: TODO: NewHardware -> use NewRaspPiOAnalog???")
+
 	return &Hardware{
 		// adc:    NewRaspPiOAnalog(),
-		Probe0: Probe{Voltage: 0, Celsius: 0, Fahrenheit: 0},
-		Probe1: Probe{Voltage: 0, Celsius: 0, Fahrenheit: 0},
-		Probe2: Probe{Voltage: 0, Celsius: 0, Fahrenheit: 0},
-		Probe3: Probe{Voltage: 0, Celsius: 0, Fahrenheit: 0},
+		i2c:    i2c,
+		Probe0: Probe{Voltage: 0, Celsius: 0},
+		Probe1: Probe{Voltage: 0, Celsius: 0},
+		Probe2: Probe{Voltage: 0, Celsius: 0},
+		Probe3: Probe{Voltage: 0, Celsius: 0},
 	}
 }
 
-// Read checks the hardware on a cycle and updates the channel
+// Read gets the current value of probe data
 func (h *Hardware) Read() *Hardware {
 	log.Println("hardware: Reading hardware")
 
@@ -53,31 +55,21 @@ func (h *Hardware) Read() *Hardware {
 	// 	}
 	// }
 
-	log.Println("hardware: TODO: Read -> get real HW values")
+	// read from i2c bus
+	var buffer []byte
+	bytes, readErr := h.i2c.Read(buffer)
+	if readErr != nil {
+		log.Fatalln(readErr)
+	}
+	log.Println(bytes)
+
+	log.Println("hardware: TODO: Read -> get real HW voltage values, not random")
 	h.Probe0.Celsius = r.Float32() * 100
 	h.Probe1.Celsius = r.Float32() * 100
 	h.Probe2.Celsius = r.Float32() * 100
 	h.Probe3.Celsius = r.Float32() * 100
 
-	// convert all °C tempratures to °F
-	h.Probe0.Fahrenheit = CelsiusToFahrenheit(h.Probe0.Celsius)
-	h.Probe1.Fahrenheit = CelsiusToFahrenheit(h.Probe1.Celsius)
-	h.Probe2.Fahrenheit = CelsiusToFahrenheit(h.Probe2.Celsius)
-	h.Probe3.Fahrenheit = CelsiusToFahrenheit(h.Probe3.Celsius)
-
 	return h
-}
-
-// CelsiusToFahrenheit converts celsius to fahrenheit
-// T(°F) = T(°C) × 9/5 + 32
-func CelsiusToFahrenheit(celsius float32) float32 {
-	return celsius*9/5 + 32
-}
-
-// FahrenheitToCelsius converts fahrenheit to celsius
-// T(°C) = (T(°F) - 32) × 5/9
-func FahrenheitToCelsius(fahrenheit float32) float32 {
-	return (fahrenheit - 32) * 5 / 9
 }
 
 // ToJSON returns the current probe values to JSON
