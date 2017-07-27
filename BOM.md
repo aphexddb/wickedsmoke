@@ -5,7 +5,8 @@ Total BOM cost $60.24
 | Part                                            | Cost   | PID  |
 | ------------------------------------------------|-------:|:-----|
 | Lithium Ion Polymer Battery - 3.7v 2500mAh      | $14.95 | 328  |
-| Break-away 0.1" 2x20-pin Strip Dual Male Header | $10.00 | 2822 |
+| Raspberry Pi Zero W                             | $10.00 | 3400 |
+| Break-away 0.1" 2x20-pin Strip Dual Male Header |  $0.95 | 2822 |
 | USB LiIon/LiPoly charger - v1.2                 | $12.50 | 259  |
 | JST 2-pin cable                                 | $0.75  | 261  |
 | Shipping UPS GROUND                             | $9.09  |      |
