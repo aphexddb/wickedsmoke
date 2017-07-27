@@ -6,6 +6,7 @@ import (
 	"math/rand"
 )
 
+// TODO nuke this
 var r = rand.New(rand.NewSource(99))
 
 // Probe represents a physical temprature probe
@@ -29,7 +30,6 @@ func NewHardware(i2c *I2C) *Hardware {
 	log.Println("hardware: TODO: NewHardware -> use NewRaspPiOAnalog???")
 
 	return &Hardware{
-		// adc:    NewRaspPiOAnalog(),
 		i2c:    i2c,
 		Probe0: Probe{Voltage: 0, Celsius: 0},
 		Probe1: Probe{Voltage: 0, Celsius: 0},
@@ -41,19 +41,6 @@ func NewHardware(i2c *I2C) *Hardware {
 // Read gets the current value of probe data
 func (h *Hardware) Read() *Hardware {
 	log.Println("hardware: Reading hardware")
-
-	// // ask adc hardware for voltages
-	// channels, err := h.adc.GetChannels()
-	// if err != nil {
-	// 	// log.Fatalf("hardware: error reading channels: %s\n", err)
-	// 	log.Printf("hardware: error reading adc channels: %s\n", err)
-	// } else {
-	// 	for i := 0; i < len(channels); i++ {
-	// 		log.Printf("adc channel %v voltage: %v\n", i, channels[i])
-
-	// 		// TODO - update probe data
-	// 	}
-	// }
 
 	// read from i2c bus
 	var buffer []byte
