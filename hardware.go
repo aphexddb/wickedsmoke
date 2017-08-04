@@ -17,8 +17,7 @@ type Probe struct {
 
 // Hardware represents all of the the temprature probes
 type Hardware struct {
-	// adc    *RaspPiOAnalog
-	i2c    *I2C
+	adc    *ADC
 	Probe0 Probe `json:"probe0"`
 	Probe1 Probe `json:"probe1"`
 	Probe2 Probe `json:"probe2"`
@@ -26,11 +25,11 @@ type Hardware struct {
 }
 
 // NewHardware creates a new instance of the hardware
-func NewHardware(i2c *I2C) *Hardware {
+func NewHardware(adc *MCP3008) *Hardware {
 	log.Println("hardware: TODO: NewHardware -> use NewRaspPiOAnalog???")
 
 	return &Hardware{
-		i2c:    i2c,
+		adc:    adc,
 		Probe0: Probe{Voltage: 0, Celsius: 0},
 		Probe1: Probe{Voltage: 0, Celsius: 0},
 		Probe2: Probe{Voltage: 0, Celsius: 0},
@@ -42,15 +41,13 @@ func NewHardware(i2c *I2C) *Hardware {
 func (h *Hardware) Read() *Hardware {
 	log.Println("hardware: Reading hardware")
 
-	// read from i2c bus
-	var buffer []byte
-	bytes, readErr := h.i2c.Read(buffer)
-	if readErr != nil {
-		log.Fatalln(readErr)
-	}
-	log.Println(bytes)
+	// read from adc
+	h.adc.Read()
 
-	log.Println("hardware: TODO: Read -> get real HW voltage values, not random")
+	h.Probe0.Voltage = float32(h.adc.values[0])
+	h.Probe1.Voltage = float32(h.adc.values[1])
+	h.Probe2.Voltage = float32(h.adc.values[2])
+	h.Probe3.Voltage = float32(h.adc.values[3])
 	h.Probe0.Celsius = r.Float32() * 100
 	h.Probe1.Celsius = r.Float32() * 100
 	h.Probe2.Celsius = r.Float32() * 100

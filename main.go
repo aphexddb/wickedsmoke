@@ -15,9 +15,9 @@ func main() {
 	log.Println("Wickedsmoke starting")
 
 	// Create new connection to I2C bus on 2 line with address 0x27
-	i2c, hwErr := NewI2C(0x27, 2)
-	if hwErr != nil {
-		log.Fatalln(hwErr)
+	i2c, i2cErr := NewI2C(0x27, 2)
+	if i2cErr != nil {
+		log.Fatalln(i2cErr)
 	}
 	// Free I2C connection on exit
 	defer i2c.Close()
@@ -26,6 +26,8 @@ func main() {
 	hardware := NewHardware(i2c)
 	cook := NewCook()
 	hub := NewHub()
+
+	// start message hub
 	go hub.Run()
 
 	// broadcast the cook state every tick
@@ -42,6 +44,12 @@ func main() {
 				cook.Probes[2].SetTemperature(hardware.Probe2.Celsius)
 				cook.Probes[3].SetTemperature(hardware.Probe3.Celsius)
 
+				// update all temp probes with voltages
+				cook.Probes[0].SetVoltage(hardware.Probe0.Voltage)
+				cook.Probes[1].SetVoltage(hardware.Probe1.Voltage)
+				cook.Probes[2].SetVoltage(hardware.Probe2.Voltage)
+				cook.Probes[3].SetVoltage(hardware.Probe3.Voltage)
+
 				// assume HW is ok if we are updating
 				cook.SetHardwareStatus(true, "OK")
 
@@ -55,8 +63,8 @@ func main() {
 	defer close(quit)
 
 	// Start HTTP server
-	err := ServeHTTP(cook, hub, address)
-	if err != nil {
-		log.Fatal("http error: ", err)
+	httpErr := ServeHTTP(cook, hub, address)
+	if httpErr != nil {
+		log.Fatal("http error: ", httpErr)
 	}
 }

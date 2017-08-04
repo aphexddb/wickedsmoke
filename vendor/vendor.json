@@ -15,6 +15,12 @@
 			"revisionTime": "2017-07-08T07:26:55Z"
 		},
 		{
+			"checksumSHA1": "8e91+1UKuR2wmFGkzwEPCf+nUYY=",
+			"path": "github.com/kidoman/embd",
+			"revision": "adc3d473054c5f066be48c9459107f70021c34a4",
+			"revisionTime": "2016-09-25T18:48:02Z"
+		},
+		{
 			"checksumSHA1": "g80lRzk6/E9dpC7XgG3OcYn/D+U=",
 			"path": "github.com/mrmorphic/hwio",
 			"revision": "57be4097a82f84a5455d11c1b00306b037debebc",

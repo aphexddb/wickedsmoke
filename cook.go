@@ -18,8 +18,14 @@ type CookProbe struct {
 	Channel       int     `json:"channel"`
 	Celsius       float32 `json:"celsius"`
 	Fahrenheit    float32 `json:"fahrenheit"`
+	Voltage       float32 `json:"voltage"`
 	TargetTemp    float32 `json:"targetTemp"`
 	TargetReached bool    `json:"targetReached"`
+}
+
+// SetVoltage updates the raw voltage value of a probe
+func (p *CookProbe) SetVoltage(voltage float32) {
+	p.Voltage = voltage
 }
 
 // SetTemperature updates the temprature of a probe
